@@ -13,8 +13,8 @@ public function behaviors()
             'class' => 'kolyunya\yii2\filters\HttpAuthorization',
             'users' =>
             [
-                'foo' => 'bar',
-                'baz' => 'quux'
+                'user-1' => 'password-1',
+                'user-2' => 'password-2'
             ]
         ]
     ];
