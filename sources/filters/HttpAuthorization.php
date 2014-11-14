@@ -10,17 +10,15 @@ class HttpAuthorization extends ActionFilter
 
     public $users;
 
-    public function beforeAction ( $action )
+    public function beforeAction($action)
     {
 
-        if ( ! self::authenticationTokenReceived() )
-        {
+        if (!self::authenticationTokenReceived()) {
             self::sendAuthenticationRequest();
             return false;
         }
 
-        if ( ! $this->validateAuthenticationToken() )
-        {
+        if (!$this->validateAuthenticationToken()) {
             self::sendAuthenticationRequest();
             return false;
         }
@@ -33,18 +31,15 @@ class HttpAuthorization extends ActionFilter
     {
 
         $tokenReceived = Yii::$app->request->headers->get('Authorization');
-        $tokenReceived = str_replace('Basic ','',$tokenReceived);
+        $tokenReceived = str_replace('Basic ', '', $tokenReceived);
 
-        if ( ! isset($this->users) )
-        {
+        if (!isset($this->users)) {
             $this->users = Yii::$app->params['users'];
         }
 
-        foreach ( $this->users as $username => $password )
-        {
-            $token = self::makeAuthenticationToken($username,$password);
-            if ( $tokenReceived === $token )
-            {
+        foreach ($this->users as $username => $password) {
+            $token = self::makeAuthenticationToken($username, $password);
+            if ($tokenReceived === $token) {
                 return true;
             }
         }
@@ -61,16 +56,15 @@ class HttpAuthorization extends ActionFilter
 
     private static function sendAuthenticationRequest()
     {
-        Yii::$app->response->setStatusCode(401,'Not Authorized');
-        Yii::$app->response->headers->set('WWW-Authenticate','Basic realm="Relaxound"');
+        Yii::$app->response->setStatusCode(401, 'Not Authorized');
+        Yii::$app->response->headers->set('WWW-Authenticate', 'Basic realm="Relaxound"');
         Yii::$app->response->send();
     }
 
-    private static function makeAuthenticationToken ( $username , $password )
+    private static function makeAuthenticationToken($username, $password)
     {
         $tokenDecoded = "$username:$password";
         $tokenEncoded = base64_encode($tokenDecoded);
         return $tokenEncoded;
     }
-
 }
